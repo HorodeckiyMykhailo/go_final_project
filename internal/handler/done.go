@@ -11,37 +11,37 @@ import (
 func(h *Handler) Done(w http.ResponseWriter, r *http.Request){
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		error.JResponse(w,"Не указан идентификатор")
+		error.JResponse(w,http.StatusBadRequest,"Не указан идентификатор")
 		return
 	}
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		error.JResponse(w,"Некоректный формат ID")
+		error.JResponse(w,http.StatusBadRequest,"Некоректный формат ID")
 		return 
 	}
 
 	req, err := h.repo.GetTaskById(id)
 	if err != nil{
-		error.JResponse(w,"Задача не найдена")
+		error.JResponse(w,http.StatusBadRequest,"Задача не найдена")
 		return
 	}
 
 	if req.Repeat == "" {
 		rowsAffected,err := h.repo.Delete(idInt)
 		if err != nil || rowsAffected == 0 {
-			error.JResponse(w,"Задача не найдена")
+			error.JResponse(w,http.StatusBadRequest,"Задача не найдена")
 			return
 		}
 	} else {
 		now := time.Now()
 		nextDate, err := NextDate(now,req.Date,req.Repeat)
 		if err != nil {
-			error.JResponse(w, "Неверный формат правила повторения")
+			error.JResponse(w, http.StatusBadRequest,"Неверный формат правила повторения")
 		   return
 		}
 		rowsAffected,err := h.repo.UpdateTask(nextDate,req.Title,req.Comment,req.Repeat,idInt)
 		if err != nil || rowsAffected == 0 {
-			error.JResponse(w,"Задача не найдена")
+			error.JResponse(w,http.StatusBadRequest,"Задача не найдена")
 			return
 		}
 	

@@ -10,18 +10,18 @@ import (
 func (h *Handler) Delete(w http.ResponseWriter, r *http.Request){
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		error.JResponse(w,"Не указан идентификатор")
+		error.JResponse(w,http.StatusBadRequest,"Не указан идентификатор")
 		return
 	}
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		error.JResponse(w,"Некоректный формат ID")
+		error.JResponse(w,http.StatusBadRequest,"Некоректный формат ID")
 		return 
 	}
 
 	rowsAffected,err := h.repo.Delete(idInt)
 	if err != nil || rowsAffected == 0 {
-		error.JResponse(w,"Задача не найдена")
+		error.JResponse(w,http.StatusBadRequest,"Задача не найдена")
 		return
 	}
 

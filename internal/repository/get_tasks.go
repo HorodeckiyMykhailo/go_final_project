@@ -6,7 +6,7 @@ import (
 )
 
 func (r *Repository) GetTasks() ([]task.TaskRequest, error) {
-	rows, err := r.db.Query("SELECT ID, Date, Title, Comment, Repeat FROM scheduler")
+	rows, err := r.db.Query("SELECT ID, Date, Title, Comment, Repeat FROM scheduler ORDER BY date ASC")
 	if err != nil {
 		return nil, err
 	}

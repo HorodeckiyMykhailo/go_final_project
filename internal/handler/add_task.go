@@ -19,7 +19,7 @@ func (h *Handler) AddTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Title == "" {
-		error.JResponse(w, "Заголовок задачи обязателен")
+		error.JResponse(w,http.StatusBadRequest,"Заголовок задачи обязателен")
 		return
 	}
 
@@ -31,7 +31,7 @@ func (h *Handler) AddTask(w http.ResponseWriter, r *http.Request) {
 	} else {
 		parsedDate, err := time.Parse("20060102", req.Date)
 		if err != nil {
-			error.JResponse(w, "Некорректный формат даты")
+			error.JResponse(w, http.StatusBadRequest,"Некорректный формат даты")
 			return
 		}
 
@@ -43,7 +43,7 @@ func (h *Handler) AddTask(w http.ResponseWriter, r *http.Request) {
 			} else {
 				nextDate, err := NextDate(now, req.Date, req.Repeat)
 				if err != nil {
-					error.JResponse(w, "Некорректное правило повторения")
+					error.JResponse(w,http.StatusBadRequest ,"Некорректное правило повторения")
 					return
 				}
 				req.Date = nextDate

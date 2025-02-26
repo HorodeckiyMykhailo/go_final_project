@@ -24,7 +24,7 @@ func(h *Handler) GetTasks(w http.ResponseWriter, r *http.Request){
 
 	tasks, err := h.repo.GetTasks()
 	if err != nil {
-		error.JResponse(w,"Ошибка при получении задач")
+		error.JResponse(w,http.StatusBadRequest,"Ошибка при получении задач")
 		return
 	}
 

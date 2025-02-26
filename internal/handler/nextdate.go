@@ -24,7 +24,7 @@ func NextDate(now time.Time, date string, repeat string) (string, error) {
 	//Проверка формата даты
 	taskDate, err := time.Parse("20060102", date)
 	if err != nil {
-		return "", fmt.Errorf("некорректный формат даты: %v", err)
+		return "", fmt.Errorf("некорректный формат даты: %w", err)
 	}
 
 	//Правило повторения при "d 1"

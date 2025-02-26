@@ -19,20 +19,19 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-	//id := r.URL.Query().Get("id")
 	if req.ID == "" {
-		error.JResponse(w, "Не указан идентификатор")
+		error.JResponse(w, http.StatusBadRequest,"Не указан идентификатор")
 		return
 	}
 
 	idInt, err := strconv.Atoi(req.ID)
 	if err != nil {
-		error.JResponse(w,"Некоректный формат ID")
+		error.JResponse(w,http.StatusBadRequest,"Некоректный формат ID")
 		return 
 	}
 
 	if req.Title == "" {
-		error.JResponse(w, "Заголовок задачи обязателен")
+		error.JResponse(w,http.StatusBadRequest,"Заголовок задачи обязателен")
 		return
 	}
 
@@ -42,13 +41,13 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	 } else {
 	 	parseDate, err := time.Parse("20060102",req.Date)
 	 	if err != nil {
-	 		error.JResponse(w,"Неверный формат даты")
+	 		error.JResponse(w,http.StatusBadRequest,"Неверный формат даты")
 	 		return
 	 	}
 	 	if parseDate.Before(now) && req.Repeat != "" {
 	 		nextDate, err := NextDate(now,req.Date,req.Repeat)
 	 		if err != nil {
-	 			error.JResponse(w, "Неверный формат правила повторения")
+	 			error.JResponse(w,http.StatusBadRequest, "Неверный формат правила повторения")
 				return
 	 		}
 	 		req.Date = nextDate
@@ -58,7 +57,7 @@ func (h *Handler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 
 	rowsAffected,err := h.repo.UpdateTask(req.Date,req.Title,req.Comment,req.Repeat,idInt)
 	if err != nil || rowsAffected == 0 {
-		error.JResponse(w,"Задача не найдена")
+		error.JResponse(w,http.StatusBadRequest,"Задача не найдена")
 		return
 	}
 
